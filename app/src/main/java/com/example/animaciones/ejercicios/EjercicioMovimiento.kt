@@ -1,5 +1,9 @@
 package com.example.animaciones.ejercicios
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,10 +39,22 @@ private val ColorNave = Color(0xFFEF6C00)
 @Composable
 fun EjercicioMovimiento() {
     var potenciado by rememberSaveable { mutableStateOf(false) }
-    // Primera versión: tamaño y posición cambian al instante
-    val tamano = if (potenciado) 110.dp else 60.dp
-    val desplazamientoX = if (potenciado) 170.dp else 0.dp
-    val desplazamientoY = if (potenciado) 70.dp else 0.dp
+    // El tamaño crece con tween y la posición se mueve con un resorte
+    val tamano by animateDpAsState(
+        targetValue = if (potenciado) 110.dp else 60.dp,
+        animationSpec = tween(durationMillis = 700),
+        label = "tamanoNave"
+    )
+    val desplazamientoX by animateDpAsState(
+        targetValue = if (potenciado) 170.dp else 0.dp,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
+        label = "desplazamientoX"
+    )
+    val desplazamientoY by animateDpAsState(
+        targetValue = if (potenciado) 70.dp else 0.dp,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
+        label = "desplazamientoY"
+    )
 
     Column(
         modifier = Modifier
