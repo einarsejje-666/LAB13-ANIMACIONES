@@ -1,6 +1,10 @@
 package com.example.animaciones.ejercicios
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 
 /** Los tres estados que puede mostrar el ranking. */
 enum class EstadoRanking { CARGANDO, CONTENIDO, ERROR }
@@ -44,6 +50,16 @@ private val ranking = listOf(
 @Composable
 fun EjercicioEstados() {
     var estado by rememberSaveable { mutableStateOf(EstadoRanking.CARGANDO) }
+    var intentos by rememberSaveable { mutableStateOf(0) }
+
+    // Simula la carga: el primer intento falla y el reintento muestra el ranking
+    LaunchedEffect(estado) {
+        if (estado == EstadoRanking.CARGANDO) {
+            delay(1800)
+            intentos++
+            estado = if (intentos % 2 == 1) EstadoRanking.ERROR else EstadoRanking.CONTENIDO
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -80,8 +96,15 @@ fun EjercicioEstados() {
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            // Transición entre estados con la animación por defecto de AnimatedContent
-            AnimatedContent(targetState = estado, label = "estadoRanking") { actual ->
+            // Entrada: fadeIn de 700 ms con 200 ms de espera. Salida: fadeOut de 300 ms
+            AnimatedContent(
+                targetState = estado,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(durationMillis = 700, delayMillis = 200)) togetherWith
+                        fadeOut(animationSpec = tween(durationMillis = 300))
+                },
+                label = "estadoRanking"
+            ) { actual ->
                 PanelRanking(estado = actual, onReintentar = { estado = EstadoRanking.CARGANDO })
             }
         }
