@@ -9,6 +9,7 @@ import kotlin.random.Random
 /** Número de carriles por los que se mueven la nave y los meteoros. */
 const val CARRILES = 3
 const val VIDAS_INICIALES = 3
+private const val PUNTOS_POR_NIVEL = 8
 
 /** Fases de una partida. */
 enum class FaseJuego { INICIO, JUGANDO, FIN }
@@ -32,19 +33,24 @@ class EstadoJuego {
         private set
     var meteoros by mutableStateOf(emptyList<Meteoro>())
         private set
+    var nivel by mutableIntStateOf(1)
+        private set
+    var mejorPuntaje by mutableIntStateOf(0)
+        private set
 
     private var siguienteId = 0L
     private var esperaNuevo = 0f
 
-    /** Fracción del alto que bajan los meteoros por segundo. */
-    private val velocidad get() = 0.32f
-    /** Segundos entre un meteoro y el siguiente. */
-    private val intervalo get() = 0.95f
+    /** Fracción del alto que bajan los meteoros por segundo; sube con el nivel. */
+    private val velocidad get() = 0.32f + (nivel - 1) * 0.07f
+    /** Segundos entre un meteoro y el siguiente; baja con el nivel. */
+    private val intervalo get() = (0.95f - (nivel - 1) * 0.08f).coerceAtLeast(0.4f)
 
     fun iniciar() {
         carril = 1
         puntos = 0
         vidas = VIDAS_INICIALES
+        nivel = 1
         meteoros = emptyList()
         esperaNuevo = 0.6f
         fase = FaseJuego.JUGANDO
@@ -68,7 +74,7 @@ class EstadoJuego {
             val y = m.y + velocidad * dt
             when {
                 m.carril == carril && y in zonaNave -> choque = true
-                y > 1.1f -> puntos++
+                y > 1.1f -> sumarPunto()
                 else -> lista += m.copy(y = y)
             }
         }
@@ -80,8 +86,14 @@ class EstadoJuego {
         }
     }
 
+    private fun sumarPunto() {
+        puntos++
+        if (puntos % PUNTOS_POR_NIVEL == 0) nivel++
+    }
+
     private fun terminar() {
         puntajeFinal = puntos
+        mejorPuntaje = maxOf(mejorPuntaje, puntos)
         meteoros = emptyList()
         fase = FaseJuego.FIN
     }

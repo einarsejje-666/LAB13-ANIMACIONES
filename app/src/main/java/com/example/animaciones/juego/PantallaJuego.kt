@@ -1,6 +1,7 @@
 package com.example.animaciones.juego
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -10,6 +11,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -76,13 +79,23 @@ fun PantallaJuego() {
         label = "destello"
     )
 
+    // Aviso que aparece al subir de nivel
+    var avisoNivel by remember { mutableStateOf(false) }
+    LaunchedEffect(estado.nivel) {
+        if (estado.nivel > 1) {
+            avisoNivel = true
+            delay(1300)
+            avisoNivel = false
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Marcador(puntos = estado.puntos, vidas = estado.vidas)
+        Marcador(puntos = estado.puntos, vidas = estado.vidas, nivel = estado.nivel)
 
         // Área de juego
         BoxWithConstraints(
@@ -126,6 +139,13 @@ fun PantallaJuego() {
                 Modifier
                     .align(Alignment.BottomStart)
                     .offset(x = xNave, y = -MARGEN_NAVE)
+            )
+            AvisoNivel(
+                visible = avisoNivel,
+                nivel = estado.nivel,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 24.dp)
             )
             MenusJuego(estado = estado, modifier = Modifier.fillMaxSize())
         }
@@ -175,12 +195,34 @@ private fun MenusJuego(estado: EstadoJuego, modifier: Modifier = Modifier) {
             )
             FaseJuego.FIN -> TarjetaMenu(
                 titulo = "Fin de la partida",
-                detalle = "Puntaje: ${estado.puntajeFinal}",
+                detalle = "Puntaje: ${estado.puntajeFinal}\nMejor puntaje: ${estado.mejorPuntaje}",
                 boton = "Jugar otra vez",
                 onClick = estado::iniciar
             )
             FaseJuego.JUGANDO -> Box(Modifier.fillMaxSize())
         }
+    }
+}
+
+/** Cartel de nivel: entra por la izquierda y sale por la derecha. */
+@Composable
+private fun AvisoNivel(visible: Boolean, nivel: Int, modifier: Modifier = Modifier) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInHorizontally { ancho -> -ancho } + fadeIn(),
+        exit = slideOutHorizontally { ancho -> ancho } + fadeOut(),
+        modifier = modifier
+    ) {
+        Text(
+            "¡Nivel $nivel!",
+            color = Color.White,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .clip(RoundedCornerShape(50))
+                .background(Color(0xFF6A1B9A))
+                .padding(horizontal = 20.dp, vertical = 8.dp)
+        )
     }
 }
 

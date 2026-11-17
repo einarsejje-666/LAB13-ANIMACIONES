@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Marcador(puntos: Int, vidas: Int, modifier: Modifier = Modifier) {
+fun Marcador(puntos: Int, vidas: Int, nivel: Int, modifier: Modifier = Modifier) {
     Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text("Puntos ", style = MaterialTheme.typography.labelLarge)
         // Cada punto nuevo entra desde arriba y el anterior sale por abajo
@@ -40,6 +40,7 @@ fun Marcador(puntos: Int, vidas: Int, modifier: Modifier = Modifier) {
         ) { valor ->
             Text("$valor", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         }
+        Text("   Nivel $nivel", style = MaterialTheme.typography.labelLarge)
         Spacer(Modifier.weight(1f))
         // Al perder una vida el corazón crece y se desvanece
         repeat(VIDAS_INICIALES) { i ->
