@@ -55,6 +55,7 @@ fun PantallaJuego() {
                 .clip(RoundedCornerShape(24.dp))
                 .background(FondoEspacio)
         ) {
+            FondoEstrellas(Modifier.fillMaxSize())
             MenusJuego(estado = estado, modifier = Modifier.fillMaxSize())
         }
     }
