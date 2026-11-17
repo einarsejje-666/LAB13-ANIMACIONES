@@ -1,6 +1,9 @@
 package com.example.animaciones.ejercicios
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,9 +48,13 @@ fun EjercicioVisibilidad() {
         Button(onClick = { visible = !visible }, modifier = Modifier.fillMaxWidth()) {
             Text(if (visible) "Ocultar notificación" else "Mostrar notificación")
         }
-        // El cuadro entra y sale con la animación por defecto de AnimatedVisibility
+        // Entrada con fadeIn (600 ms) y salida con fadeOut (400 ms)
         Box(modifier = Modifier.fillMaxWidth().height(110.dp)) {
-            AnimatedVisibility(visible = visible) {
+            AnimatedVisibility(
+                visible = visible,
+                enter = fadeIn(animationSpec = tween(durationMillis = 600)),
+                exit = fadeOut(animationSpec = tween(durationMillis = 400))
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
