@@ -1,5 +1,6 @@
 package com.example.animaciones.ejercicios
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -79,8 +80,10 @@ fun EjercicioEstados() {
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            // Primera versión: el contenido se reemplaza de golpe
-            PanelRanking(estado = estado, onReintentar = { estado = EstadoRanking.CARGANDO })
+            // Transición entre estados con la animación por defecto de AnimatedContent
+            AnimatedContent(targetState = estado, label = "estadoRanking") { actual ->
+                PanelRanking(estado = actual, onReintentar = { estado = EstadoRanking.CARGANDO })
+            }
         }
     }
 }
