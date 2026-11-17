@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "LAB13-ANIMACIONES"
 include(":app")
+include(":codelab")
