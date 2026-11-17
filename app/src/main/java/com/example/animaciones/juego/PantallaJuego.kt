@@ -1,6 +1,7 @@
 package com.example.animaciones.juego
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -37,8 +38,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,13 +51,30 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 
 /** Color de fondo del área de juego. */
 val FondoEspacio = Color(0xFF0B1026)
+private val FondoGolpe = Color(0xFF7F1D1D)
 
 @Composable
 fun PantallaJuego() {
     val estado = remember { EstadoJuego() }
+
+    // Destello rojo cada vez que un meteoro golpea la nave
+    var destello by remember { mutableStateOf(false) }
+    LaunchedEffect(estado.golpes) {
+        if (estado.golpes > 0) {
+            destello = true
+            delay(180)
+            destello = false
+        }
+    }
+    val colorFondo by animateColorAsState(
+        targetValue = if (destello) FondoGolpe else FondoEspacio,
+        animationSpec = tween(durationMillis = 220),
+        label = "destello"
+    )
 
     Column(
         modifier = Modifier
@@ -62,13 +82,15 @@ fun PantallaJuego() {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        Marcador(puntos = estado.puntos, vidas = estado.vidas)
+
         // Área de juego
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .clip(RoundedCornerShape(24.dp))
-                .background(FondoEspacio)
+                .background(colorFondo)
                 .pointerInput(Unit) {
                     // Tocar la mitad izquierda o derecha también mueve la nave
                     detectTapGestures { toque -> estado.mover(if (toque.x < size.width / 2) -1 else 1) }
