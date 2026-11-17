@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.animaciones.ejercicios.EjercicioColor
+import com.example.animaciones.ejercicios.EjercicioEstados
 import com.example.animaciones.ejercicios.EjercicioMovimiento
 import com.example.animaciones.ejercicios.EjercicioVisibilidad
 
@@ -79,6 +80,7 @@ fun PantallaPrincipal() {
                 Seccion.VISIBILIDAD -> EjercicioVisibilidad()
                 Seccion.COLOR -> EjercicioColor()
                 Seccion.MOVIMIENTO -> EjercicioMovimiento()
+                Seccion.ESTADOS -> EjercicioEstados()
                 else -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("Próximamente", style = MaterialTheme.typography.titleMedium)
                 }
