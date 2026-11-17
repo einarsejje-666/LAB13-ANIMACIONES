@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.animaciones.ejercicios.EjercicioColor
+import com.example.animaciones.ejercicios.EjercicioMovimiento
 import com.example.animaciones.ejercicios.EjercicioVisibilidad
 
 /** Secciones de la app, una por cada tipo de animación. */
@@ -77,6 +78,7 @@ fun PantallaPrincipal() {
             when (actual) {
                 Seccion.VISIBILIDAD -> EjercicioVisibilidad()
                 Seccion.COLOR -> EjercicioColor()
+                Seccion.MOVIMIENTO -> EjercicioMovimiento()
                 else -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("Próximamente", style = MaterialTheme.typography.titleMedium)
                 }
