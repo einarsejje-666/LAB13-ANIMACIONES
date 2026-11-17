@@ -1,5 +1,6 @@
 package com.example.animaciones.ejercicios
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,8 +32,11 @@ private val Verde = Color(0xFF2E7D32)
 @Composable
 fun EjercicioColor() {
     var escudoActivo by rememberSaveable { mutableStateOf(false) }
-    // Primera versión: el color cambia de golpe
-    val colorFondo = if (escudoActivo) Verde else Azul
+    // El color pasa de forma continua entre azul y verde
+    val colorFondo by animateColorAsState(
+        targetValue = if (escudoActivo) Verde else Azul,
+        label = "colorEscudo"
+    )
 
     Column(
         modifier = Modifier
