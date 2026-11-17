@@ -91,5 +91,45 @@ fun EjercicioMovimiento() {
         Button(onClick = { potenciado = !potenciado }, modifier = Modifier.fillMaxWidth()) {
             Text(if (potenciado) "Volver al inicio" else "Tomar potenciador")
         }
+
+        Text("Orden de los modificadores", style = MaterialTheme.typography.titleMedium)
+        // offset va primero: se mueve la caja completa con su fondo
+        PistaComparacion(
+            titulo = "offset → background",
+            descripcion = "El desplazamiento se aplica antes de pintar, así que el fondo viaja con la estrella.",
+            modificadorCaja = Modifier
+                .offset(x = desplazamientoX)
+                .size(56.dp)
+                .background(ColorNave)
+        )
+        // background va primero: el fondo queda en su sitio y solo se mueve el contenido
+        PistaComparacion(
+            titulo = "background → offset",
+            descripcion = "El fondo se pinta en la posición original y solo la estrella se desplaza.",
+            modificadorCaja = Modifier
+                .size(56.dp)
+                .background(ColorNave)
+                .offset(x = desplazamientoX)
+        )
+    }
+}
+
+@Composable
+private fun PistaComparacion(titulo: String, descripcion: String, modificadorCaja: Modifier) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(titulo, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .padding(12.dp)
+        ) {
+            Box(modifier = modificadorCaja, contentAlignment = Alignment.Center) {
+                Icon(Icons.Filled.Star, contentDescription = null, tint = Color.White)
+            }
+        }
+        Text(descripcion, style = MaterialTheme.typography.bodySmall)
     }
 }
