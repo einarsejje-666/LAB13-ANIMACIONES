@@ -36,6 +36,9 @@ android {
 }
 
 dependencies {
+    // Iconos de Material (estrella, corazón, flechas, reproducir)
+    implementation("androidx.compose.material:material-icons-core:1.7.8")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
