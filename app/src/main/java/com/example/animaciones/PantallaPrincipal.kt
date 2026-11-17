@@ -4,7 +4,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,6 +28,7 @@ import com.example.animaciones.ejercicios.EjercicioColor
 import com.example.animaciones.ejercicios.EjercicioEstados
 import com.example.animaciones.ejercicios.EjercicioMovimiento
 import com.example.animaciones.ejercicios.EjercicioVisibilidad
+import com.example.animaciones.juego.PantallaJuego
 
 /** Secciones de la app, una por cada tipo de animación. */
 enum class Seccion(val titulo: String) {
@@ -81,9 +80,7 @@ fun PantallaPrincipal() {
                 Seccion.COLOR -> EjercicioColor()
                 Seccion.MOVIMIENTO -> EjercicioMovimiento()
                 Seccion.ESTADOS -> EjercicioEstados()
-                else -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Próximamente", style = MaterialTheme.typography.titleMedium)
-                }
+                Seccion.JUEGO -> PantallaJuego()
             }
         }
     }
