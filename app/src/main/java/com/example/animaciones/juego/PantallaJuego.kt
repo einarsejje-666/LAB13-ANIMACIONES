@@ -35,8 +35,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -78,8 +81,25 @@ fun PantallaJuego() {
                 animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium),
                 label = "xNave"
             )
+            // Franja vertical (en fracciones del alto) donde un meteoro choca con la nave
+            val zonaNave = ((maxHeight - MARGEN_NAVE - TAMANO_NAVE - 12.dp) / maxHeight)..((maxHeight - MARGEN_NAVE) / maxHeight)
+            val zonaActual by rememberUpdatedState(zonaNave)
+
+            // Bucle de juego: un paso por fotograma mientras dure la partida
+            LaunchedEffect(estado.fase) {
+                if (estado.fase != FaseJuego.JUGANDO) return@LaunchedEffect
+                var anterior = withFrameNanos { it }
+                while (estado.fase == FaseJuego.JUGANDO) {
+                    withFrameNanos { ahora ->
+                        val dt = ((ahora - anterior) / 1_000_000_000f).coerceAtMost(0.05f)
+                        anterior = ahora
+                        estado.avanzar(dt, zonaActual)
+                    }
+                }
+            }
 
             FondoEstrellas(Modifier.fillMaxSize())
+            CapaMeteoros(meteoros = { estado.meteoros }, modifier = Modifier.fillMaxSize())
             Nave(
                 Modifier
                     .align(Alignment.BottomStart)
