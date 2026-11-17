@@ -48,22 +48,32 @@ fun EjercicioVisibilidad() {
         Button(onClick = { visible = !visible }, modifier = Modifier.fillMaxWidth()) {
             Text(if (visible) "Ocultar notificación" else "Mostrar notificación")
         }
+        NotificacionLogro(visible = visible)
+    }
+}
+
+/**
+ * Va en su propia función para que AnimatedVisibility se llame dentro de un Box
+ * sin que Kotlin tome la versión de ColumnScope del Column exterior.
+ */
+@Composable
+private fun NotificacionLogro(visible: Boolean) {
+    // Alto fijo: el resto de la pantalla no se mueve al ocultar el cuadro
+    Box(modifier = Modifier.fillMaxWidth().height(110.dp)) {
         // Entrada con fadeIn (600 ms) y salida con fadeOut (400 ms)
-        Box(modifier = Modifier.fillMaxWidth().height(110.dp)) {
-            AnimatedVisibility(
-                visible = visible,
-                enter = fadeIn(animationSpec = tween(durationMillis = 600)),
-                exit = fadeOut(animationSpec = tween(durationMillis = 400))
+        AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn(animationSpec = tween(durationMillis = 600)),
+            exit = fadeOut(animationSpec = tween(durationMillis = 400))
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(Color(0xFF6A1B9A)),
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(Color(0xFF6A1B9A)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("¡Logro desbloqueado!", color = Color.White, fontWeight = FontWeight.Bold)
-                }
+                Text("¡Logro desbloqueado!", color = Color.White, fontWeight = FontWeight.Bold)
             }
         }
     }
